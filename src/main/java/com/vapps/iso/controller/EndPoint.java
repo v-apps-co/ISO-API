@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -20,23 +21,31 @@ public class EndPoint {
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "/endpointuser", method = RequestMethod.GET)
-	public ResponseEntity<String> endPointUser(OAuth2Authentication authentication) {
+	public ResponseEntity<?> endPointUser(OAuth2Authentication authentication) {
 		OAuth2AuthenticationDetails oAuth2AuthenticationDetails = (OAuth2AuthenticationDetails) authentication
 				.getDetails();
 		Map<String, Object> additionalInfo = tokenServices.readAccessToken(oAuth2AuthenticationDetails.getTokenValue())
 				.getAdditionalInformation();
-		return new ResponseEntity<String>("Your UUID: " + additionalInfo.get("uuid").toString() + " , your username: "
-				+ authentication.getPrincipal() + " and your role USER", HttpStatus.OK);
+
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		params.put("userInfo", "Your UUID: " + additionalInfo.get("uuid").toString() + " , your username: "
+				+ authentication.getPrincipal() + " and your role USER");
+		return new ResponseEntity<>(params, HttpStatus.OK);
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/endpointadmin", method = RequestMethod.GET)
-	public ResponseEntity<String> endPointAdmin(OAuth2Authentication authentication) {
+	public ResponseEntity<?> endPointAdmin(OAuth2Authentication authentication) {
 		OAuth2AuthenticationDetails oAuth2AuthenticationDetails = (OAuth2AuthenticationDetails) authentication
 				.getDetails();
 		Map<String, Object> additionalInfo = tokenServices.readAccessToken(oAuth2AuthenticationDetails.getTokenValue())
 				.getAdditionalInformation();
-		return new ResponseEntity<String>("Your UUID: " + additionalInfo.get("uuid").toString() + " , your username: "
-				+ authentication.getPrincipal() + " and your role ADMIN", HttpStatus.OK);
+
+		Map<String, Object> params = new HashMap<String, Object>();
+
+		params.put("userInfo", "Your UUID: " + additionalInfo.get("uuid").toString() + " , your username: "
+				+ authentication.getPrincipal() + " and your role ADMIN");
+		return new ResponseEntity<>(params, HttpStatus.OK);
 	}
 }
