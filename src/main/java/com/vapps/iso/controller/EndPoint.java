@@ -9,8 +9,11 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.EOFException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,5 +50,11 @@ public class EndPoint {
 		params.put("userInfo", "Your UUID: " + additionalInfo.get("uuid").toString() + " , your username: "
 				+ authentication.getPrincipal() + " and your role ADMIN");
 		return new ResponseEntity<>(params, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file) {
+		System.out.println(file.getOriginalFilename());
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
